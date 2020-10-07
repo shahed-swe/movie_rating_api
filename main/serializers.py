@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Movie
-        fields = '__all__'
+        fields = ['id','movie_name','description','no_of_ratings','avg_rating']
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

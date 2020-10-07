@@ -24,13 +24,18 @@ class MovieViewSet(viewsets.ModelViewSet):
                 if stars >= 1 and stars <= 5:
                     rating = models.Ratings.objects.get(user=request.user, movie=movie.id)
                     rating.stars = stars
-                    response = {'message': 'its working'}
                     rating.save()
+                    serializer = serializers.RatingSerializer(rating, many=False)
+                    response = {'message': 'Rating Updated','result':serializer.data}
+                    return Response(response, status=status.HTTP_200_OK)
                 else:
                     response = {'message':'number is not in the range'}
+                    return Response(response, status=status.HTTP_204_NO_CONTENT)
             except:
-                models.Ratings.objects.create(user=request.user, movie=movie, stars=stars)
-            return Response(response, status=status.HTTP_200_OK)
+                rating = models.Ratings.objects.create(user=request.user, movie=movie, stars=stars)
+                serializer = serializers.RatingSerializer(rating, many=False)
+                response = {'message':'Rating Created','result':serializer.data}
+                return Response(response, status=status.HTTP_201_CREATED)
         else:
             response = {'message':"it's not working"}
             return Response(response, status=status.HTTP_404_NOT_FOUND)
