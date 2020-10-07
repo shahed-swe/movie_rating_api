@@ -6,7 +6,7 @@ from . import views
 router = routers.DefaultRouter()
 router.register(r'movie',views.MovieViewSet)
 router.register(r'ratings',views.RatingViewSet)
-
+router.register(r'user', views.UserViewSet)
 urlpatterns = [
     path('', include(router.urls)),
 ]
