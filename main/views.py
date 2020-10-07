@@ -11,16 +11,25 @@ class MovieViewSet(viewsets.ModelViewSet):
     queryset = models.Movie.objects.all()
     serializer_class = serializers.MovieSerializer
     authentication_classes = (TokenAuthentication, )
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     # this things are for giving message to front-end
     @action(detail=True, methods=['POST'])
     def rate_movie(self, request,pk=None):
-        print(request.data)
         if 'stars' in request.data:
             movie = models.Movie.objects.get(id=pk)
-            print("Movie Title", movie.movie_name)
-            response = {'message': 'its working'}
+            stars = int(request.data['stars'])
+            response = {'message':'not done yet'}
+            try:
+                if stars >= 1 and stars <= 5:
+                    rating = models.Ratings.objects.get(user=request.user, movie=movie.id)
+                    rating.stars = stars
+                    response = {'message': 'its working'}
+                    rating.save()
+                else:
+                    response = {'message':'number is not in the range'}
+            except:
+                models.Ratings.objects.create(user=request.user, movie=movie, stars=stars)
             return Response(response, status=status.HTTP_200_OK)
         else:
             response = {'message':"it's not working"}
@@ -29,3 +38,5 @@ class MovieViewSet(viewsets.ModelViewSet):
 class RatingViewSet(viewsets.ModelViewSet):
     queryset = models.Ratings.objects.all()
     serializer_class = serializers.RatingSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
