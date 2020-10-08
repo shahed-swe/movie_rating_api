@@ -1,6 +1,4 @@
-# movie_rating_api
 ## This is fully functional movie rating api made with python
-## Getting Started
 To run this project first you have to create a virtual environment
 first install python virtual environment package
 ```
